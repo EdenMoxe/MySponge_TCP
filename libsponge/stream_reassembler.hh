@@ -4,16 +4,23 @@
 #include "byte_stream.hh"
 
 #include <cstdint>
+#include <exception>
+#include <map>
 #include <string>
-
+#include <unordered_map>
+#include <vector>
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
 //! possibly overlapping) into an in-order byte stream.
 class StreamReassembler {
   private:
     // Your code here -- add private members as necessary.
 
-    ByteStream _output;  //!< The reassembled in-order byte stream
-    size_t _capacity;    //!< The maximum number of bytes
+    ByteStream _output;                             //!< The reassembled in-order byte stream
+    size_t _capacity;                               //!< The maximum number of bytes
+    std::unordered_map<size_t, char> _unassembled;  //暂存未组装结构
+    size_t _nidx;                                   //已组装字节的下一个索引/第一个未组装索引
+    size_t _unassembled_cnt;                        //未组装字节数
+    size_t _eofidx;                                 //最后一个分片索引
 
   public:
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
